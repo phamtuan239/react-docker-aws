@@ -15,17 +15,29 @@ jobs:
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
-      # - name: docker
-      #   run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      # - name: docker build
-      #   run: docker build -t phamtuan239/react-docker-aws -f Dockerfile.dev .
-      # - name: docker run
-      #   run: docker run -e CI=true phamtuan239/react-docker-aws npm run test
-      # - name: Get timestamp
-      #   id: timestamp
-      #   run: echo "::set-output name=timestamp::$(date +'%s')"
+      - name: docker
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: docker build
+        run: docker build -t phamtuan239/react-docker-aws -f Dockerfile.dev .
+      - name: docker run
+        run: docker run -e CI=true phamtuan239/react-docker-aws npm run test
+      - name: Get timestamp
+        id: timestamp
+        run: echo "::set-output name=timestamp::$(date +'%s')"
       - name: Generate deployment package
         run: zip -r React-App-Aws.zip . -x '*.git*' -x '**node_modules**'
+      - name: Get timestamp
+        uses: gerred/actions/current-time@master
+        id: current-time
+
+      - name: Run string replace
+        uses: frabert/replace-string-action@master
+        id: format-time
+        with:
+          pattern: '[:\.]+'
+          string: '${{ steps.current-time.outputs.time }}'
+          replace-with: '-'
+          flags: 'g'
       - name: deploy to EB
         uses: einaregilsson/beanstalk-deploy@v20
         with:
@@ -35,6 +47,6 @@ jobs:
           environment_name: Reactdockeraws-env
           region: ap-southeast-1
           existing_bucket_name: elasticbeanstalk-ap-southeast-1-891869786502
-          version_label: React App Aws
+          version_label: react-app-aws-${{ steps.format-time.outputs.replaced }}
           deployment_package: React-App-Aws.zip
           use_existing_version_if_available: true
