@@ -14,12 +14,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: docker
-        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
-      - name: docker build
-        run: docker build -t phamtuan239/react-docker-aws -f Dockerfile.dev .
-      - name: docker run
-        run: docker run -e CI=true phamtuan239/react-docker-aws npm run test
+      # - name: docker
+      #   run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      # - name: docker build
+      #   run: docker build -t phamtuan239/react-docker-aws -f Dockerfile.dev .
+      # - name: docker run
+      #   run: docker run -e CI=true phamtuan239/react-docker-aws npm run test
       # - name: Get timestamp
       #   id: timestamp
       #   run: echo "::set-output name=timestamp::$(date +'%s')"
