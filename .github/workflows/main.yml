@@ -32,6 +32,6 @@ jobs:
           environment_name: Reactdockeraws-env
           region: ap-southeast-1
           existing_bucket_name: elasticbeanstalk-ap-southeast-1-891869786502
-          version_label: Sample Application React
+          version_label: Sample Application React App
           deployment_package: docker-compose-prod.yml
           use_existing_version_if_available: true
