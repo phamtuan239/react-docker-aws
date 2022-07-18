@@ -13,7 +13,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout source code
+        uses: actions/checkout@v2
       # - name: docker
       #   run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
       # - name: docker build
@@ -23,6 +24,8 @@ jobs:
       # - name: Get timestamp
       #   id: timestamp
       #   run: echo "::set-output name=timestamp::$(date +'%s')"
+      - name: Generate deployment package
+        run: zip -r React-App-Aws.zip . -x '*.git*' -x '**node_modules**'
       - name: deploy to EB
         uses: einaregilsson/beanstalk-deploy@v20
         with:
@@ -32,6 +35,6 @@ jobs:
           environment_name: Reactdockeraws-env
           region: ap-southeast-1
           existing_bucket_name: elasticbeanstalk-ap-southeast-1-891869786502
-          version_label: Sample Application React App
-          deployment_package: docker-compose-prod.yml
+          version_label: React App Aws
+          deployment_package: React-App-Aws.zip
           use_existing_version_if_available: true
