@@ -34,4 +34,4 @@ jobs:
           existing_bucket_name: elasticbeanstalk-ap-southeast-1-891869786502
           version_label: Sample Application
           deployment_package: docker-compose.yml
-          use_existing_version_if_available: true
+          use_existing_version_if_available: false
