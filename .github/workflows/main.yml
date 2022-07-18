@@ -1,0 +1,37 @@
+name: React docker aws
+
+on:
+  push:
+    branches: ['master']
+
+env:
+  DOCKER_USER: ${{ secrets.DOCKER_USER }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: docker
+        run: docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
+      - name: docker build
+        run: docker build -t phamtuan239/react-docker-aws -f Dockerfile.dev .
+      - name: docker run
+        run: docker run -e CI=true phamtuan239/react-docker-aws npm run test
+      # - name: Get timestamp
+      #   id: timestamp
+      #   run: echo "::set-output name=timestamp::$(date +'%s')"
+      - name: deploy to EB
+        uses: einaregilsson/beanstalk-deploy@v20
+        with:
+          aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          application_name: react-docker-aws
+          environment_name: Reactdockeraws-env
+          region: ap-southeast-1
+          existing_bucket_name: elasticbeanstalk-ap-southeast-1-891869786502
+          version_label: Sample Application
+          deployment_package: docker-compose.yml
+          use_existing_version_if_available: true
